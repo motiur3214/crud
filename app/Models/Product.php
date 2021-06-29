@@ -10,4 +10,7 @@ class Product extends Model
         'title', 'sku', 'description'
     ];
 
+
+   
+   
 }

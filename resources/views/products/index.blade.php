@@ -1,14 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
-
+<style>
+.pagination{
+    float:right;
+}
+</style>
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Products</h1>
     </div>
 
 
     <div class="card">
-        <form action="" method="get" class="card-header">
+        <form action="{{ route('search') }}" method="get" class="card-header">
             <div class="form-row justify-content-between">
                 <div class="col-md-2">
                     <input type="text" name="title" placeholder="Product Title" class="form-control">
@@ -51,11 +55,13 @@
                     </thead>
 
                     <tbody>
-
+               
+                   @foreach($allproduct as $products)
+                   
                     <tr>
-                        <td>1</td>
-                        <td>T-Shirt <br> Created at : 25-Aug-2020</td>
-                        <td>Quality product in low cost</td>
+                        <td>{{$counter++}}</td>
+                        <td>{{$products->title}} <br> Created at : 25-Aug-2020</td>
+                        <td>{{$products->description}}</td>
                         <td>
                             <dl class="row mb-0" style="height: 80px; overflow: hidden" id="variant">
 
@@ -77,10 +83,11 @@
                             </div>
                         </td>
                     </tr>
-
+@endforeach
                     </tbody>
-
+                  
                 </table>
+                {{ $allproduct->links() }} 
             </div>
 
         </div>
@@ -88,7 +95,7 @@
         <div class="card-footer">
             <div class="row justify-content-between">
                 <div class="col-md-6">
-                    <p>Showing 1 to 10 out of 100</p>
+                    <p>showing {{$allproduct->count()}} out of {{$allproduct1->count()}}  </p>
                 </div>
                 <div class="col-md-2">
 

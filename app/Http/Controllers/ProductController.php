@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantPrice;
+use App\Models\ProductImage;
 use App\Models\Variant;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\DB;
 class ProductController extends Controller
 {
     /**
@@ -17,7 +19,35 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('products.index');
+      $allproduct= Product::paginate(5);
+      $allproduct1= Product::all();
+      $varients=[];
+      foreach ($allproduct as $product)
+      {
+        $varients= ProductVariantPrice::where('product_id',$product->id)->get();
+      }
+      $counter=1;
+      $productVariant=[];
+      foreach ($varients as $varient)
+        {
+
+           $productVariant=ProductVariant::where(function ($query) use ($varient) {
+            $query->where('id',$varient->product_variant_one)
+           ->orWhere('id',$varient->product_variant_two)
+           ->orWhere('id',$varient->product_variant_three);
+           })->get();
+        }
+        $productimg1=$provariant=[];
+
+        foreach ($productVariant as $productimg)
+        {  
+          $productimg1=ProductImage::where('product_id',$productimg->product_id)->get();
+          $provariant=Variant::find($productimg->variant_id);
+         
+         }
+          $provariant=Variant::find($productimg->variant_id);
+        
+          return view('products.index', compact('allproduct','varients','productVariant','productimg1','provariant','counter','allproduct1'));
     }
 
     /**
@@ -28,6 +58,7 @@ class ProductController extends Controller
     public function create()
     {
         $variants = Variant::all();
+
         return view('products.create', compact('variants'));
     }
 
@@ -39,7 +70,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        
+     
     }
 
 
@@ -88,4 +119,19 @@ class ProductController extends Controller
     {
         //
     }
+    public function search(Request $request)
+    {   $counter=0;
+       
+        $search=$request->input('title');
+       if($search!=""){
+         $allproduct = Product::where('title', 'like', '%'.$search.'%')->paginate(2);
+         $allproduct1 = Product::where('title', 'like', '%'.$search.'%');
+         $allproduct->appends(['title' => $search]);
+   }
+   else{
+    $allproduct = Product::paginate(10);
+   }
+return view('products.index', compact('allproduct','allproduct1','counter'));
+}
+
 }
